@@ -1,7 +1,7 @@
 <template>
-  <div class="p-8 flex justify-center items-start relative">
-    <Textarea v-model="data" autoResize rows="5" cols="30" />
-    <Button icon="pi pi-check" @click="onBase64Enter" class="absolute bottom-0 right-0" />
+  <div class="p-8  justify-center items-start relative">
+    <Textarea class="max-h-32 overflow-y-auto" v-model="data" rows="5" cols="30" />
+    <Button icon="pi pi-check" @click="onBase64Enter" class="absolute bottom-4 right-0" />
   </div>
 </template>
 
@@ -14,5 +14,3 @@ const onBase64Enter = () => {
 }
 
 </script>
-
-<style></style>
