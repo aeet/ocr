@@ -10,7 +10,6 @@ const emits = defineEmits(['upload:image'])
 const data = ref("")
 
 const onBase64Enter = () => {
-  console.log(data.value)
   emits('upload:image', { id: generateUUID(), data: data.value, type: 'base64' })
 }
 
