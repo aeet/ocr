@@ -12,11 +12,11 @@
             </template>
             <template v-if="store.getSelected() === 'internet'">
               <ImageInternet @upload:image="store.addImage" />
-              <ImageList :type="'internet'" :images="store.getImages()" @:delete:images="store.removeImage" />
+              <ImageList :type="'internet'" :images="store.getImages()" @delete:image="store.removeImage" />
             </template>
             <template v-if="store.getSelected() === 'base64'">
               <ImageBase64 @upload:image="store.addImage" />
-              <ImageList :type="'base64'" :images="store.getImages()" @delete:images="store.removeImage" />
+              <ImageList :type="'base64'" :images="store.getImages()" @delete:image="store.removeImage" />
             </template>
           </div>
         </template>

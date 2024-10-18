@@ -12,7 +12,6 @@ const onFileSelect = async (event: any) => {
   const files = event.files;
   const base64Promises = Array.from(files).map(file => convertToBase64(file));
   Promise.all(base64Promises).then(images => {
-    console.log(images)
     emits('upload:images', images)
   });
 }
