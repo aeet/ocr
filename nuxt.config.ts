@@ -1,20 +1,21 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import * as path from "path";
+
 export default defineNuxtConfig({
-  ssr: true,
-  compatibilityDate: "2024-04-03",
-  devtools: { enabled: true },
-  css: ["@/style.less"],
+  modules: ["@primevue/nuxt-module"],
+  css: ["@/assets/styles/tailwind.css", "@/assets/styles/base.css"],
+  primevue: {
+    options: { theme: "none" },
+  },
   app: {
     head: {
       link: [{ rel: "icon", type: "image/x-icon", href: "favicon.png" }],
     },
   },
-  modules: [
-    "@nuxt/ui",
-    "@nuxt/content",
-    "@nuxt/eslint",
-    "@nuxt/fonts",
-    "@nuxt/image",
-    "@pinia/nuxt",
-  ],
+  postcss: {
+    plugins: {
+      "postcss-import": {},
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
 });
