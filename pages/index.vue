@@ -5,7 +5,7 @@
         <template #title>Images</template>
         <template #content>
           <div class="m-0">
-            <ImageRadio :options="getOptions()" :value="getSelected()" />
+            <ImageRadio :options="getOptions()" :value="getSelected()" @update:value="onRadioValueChange" />
           </div>
         </template>
       </Card>
@@ -24,7 +24,10 @@ definePageMeta({
   layout: 'default',
 })
 
-const { getOptions, getSelected } = useMyImageStore()
+const { getOptions, getSelected, setSelected } = useMyImageStore()
 
+const onRadioValueChange = (value: string) => {
+  setSelected(value)
+}
 
 </script>

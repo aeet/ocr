@@ -10,4 +10,11 @@
 const { options, value } = defineProps<{ options: string[], value: string }>()
 import { ref } from 'vue';
 const ingredient = ref(value ? value : options[0]);
+
+const emit = defineEmits(['update:value'])
+
+watch(ingredient, () => {
+    emit('update:value', ingredient.value)
+})
+
 </script>
