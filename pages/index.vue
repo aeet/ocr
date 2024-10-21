@@ -45,60 +45,84 @@
 
 <script lang="ts" setup>
 import { useMyImageStore } from '~/stores/image';
-import { ref, type VNodeRef } from 'vue';
+import { ref, unref } from 'vue';
 
 definePageMeta({
   layout: 'default',
 })
 
-const store = useMyImageStore()
-const loading = ref(false)
+const store = useMyImageStore();
+const loading = ref(false);
 const ocrResult = ref<any>(null);
 const ocrText = ref("");
-const imageSize = ref({ width: 800, height: 600 });
+const imageSize = ref({ width: 0, height: 0 });
 const canvasRef = ref<HTMLCanvasElement | undefined>();
 
 const drawOcrResultOnCanvas = () => {
   const canvas = canvasRef.value;
-  if (!canvas || !ocrResult.value || !ocrResult.value.data || !imageSize.value.width || !imageSize.value.height) return;
-  const ctx = canvas?.getContext('2d');
+  if (!canvas || !ocrResult.value || !ocrResult.value.data) return;
+
+  const ctx = canvas.getContext('2d');
   if (!ctx) return;
+
   canvas.width = imageSize.value.width;
   canvas.height = imageSize.value.height;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   ocrResult.value.data.forEach((item: any) => {
     const [coordinates, text] = item;
     const [topLeft, , bottomLeft] = coordinates;
+
     const rectHeight = bottomLeft[1] - topLeft[1];
     const fontSize = rectHeight * 0.8;
     ctx.fillStyle = 'black';
     ctx.font = `${fontSize}px Arial`;
+
     const textX = topLeft[0];
     const textY = topLeft[1] + rectHeight * 0.8;
     ctx.fillText(text[0], textX, textY);
   });
-  const combinedText = ocrResult?.value.data?.map((item: any) => item[1][0]).join(' ');
-  ocrText.value = combinedText
-  loading.value = false
+
+  const combinedText = ocrResult.value.data.map((item: any) => item[1][0]).join(' ');
+  ocrText.value = combinedText;
+  loading.value = false;
 };
 
-
-
+const getImageSize = (base64Str: string) => {
+  return new Promise<{ width: number; height: number }>((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve({ width: img.width, height: img.height });
+    };
+    img.src = base64Str;
+  });
+};
 
 const checkImage = async (image: ImageMeta) => {
-  loading.value = true
+  loading.value = true;
+
   if (image.type === 'upload' || image.type === 'base64') {
-    const { data } = await useLazyFetch<any>('/ocr/predict-by-base64', { method: 'post', body: { base64_str: image.data } })
-    ocrResult.value = unref(data)
-    drawOcrResultOnCanvas()
+    const { data } = await useLazyFetch<any>('/ocr/predict-by-base64', { method: 'post', body: { base64_str: image.data } });
+    ocrResult.value = unref(data);
+    imageSize.value = await getImageSize(image.data); 
+    drawOcrResultOnCanvas();
   }
+
   if (image.type === 'internet') {
-    const { data } = await useLazyFetch<any>(`/ocr/predict-by-url?imageUrl=${image.data}`)
-    ocrResult.value = unref(data)
-    drawOcrResultOnCanvas()
+    const { data } = await useLazyFetch<any>(`/ocr/predict-by-url?imageUrl=${image.data}`);
+    ocrResult.value = unref(data);
+    imageSize.value = { width: 800, height: 600 }; 
+    drawOcrResultOnCanvas();
   }
 }
-
-
 </script>
+
+<style scoped>
+canvas {
+  max-width: 100%; 
+  height: auto;
+}
+</style>
