@@ -44,7 +44,7 @@ export const useMyImageStore = defineStore<
       this.images.push(image);
     },
     addImages(images: ImageMeta[]) {
-      this.images = this.images.concat(images); 
+      this.images = this.images.concat(images);
     },
     removeImage(image: ImageMeta) {
       this.images = this.images.filter((i: ImageMeta) => i.id !== image.id);

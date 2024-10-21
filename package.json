@@ -16,6 +16,7 @@
         "postcss-import": "^16.1.0"
     },
     "dependencies": {
+        "@nuxtjs/axios": "^5.13.6",
         "@pinia/nuxt": "^0.5.5",
         "nuxt-app": "file:",
         "pinia": "^2.2.4",
